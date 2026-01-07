@@ -1,33 +1,30 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../models/User");
 
-// POST /api/register
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Basic validation (backend responsibility)
   if (!name || !email || !password) {
-    return res.status(400).json({
-      message: "All fields are required",
-    });
+    return res.status(400).json({ message: "All fields required" });
   }
 
-  if (password.length < 6) {
-    return res.status(400).json({
-      message: "Password must be at least 6 characters",
+  try {
+    const user = await User.create({ name, email, password });
+    console.log("Saved to DB:", user);
+
+    res.status(201).json({
+      message: "User stored in database",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
-
-  // Database will come later
-  console.log("Received from frontend:", req.body);
-
-  return res.status(201).json({
-    message: "User registered successfully (backend)",
-    user: {
-      name,
-      email,
-    },
-  });
 });
 
 module.exports = router;
