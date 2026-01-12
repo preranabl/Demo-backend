@@ -9,7 +9,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "http://localhost:3001", // frontend port
+  origin: "http://localhost:3000", // frontend port
   methods: ["GET", "POST", "PUT", "DELETE"],
 }));
 app.use(express.json());
